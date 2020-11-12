@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="{% static 'dapp/styles.css' %}" rel="stylesheet" type="text/css">
+    
+    <title>Django Application</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+    <h1 style="font-weight: 400;">Contact Us Form</h1>
+    
+    <form id="new_user_form" method="POST">
+    {% csrf_token %}
+
+    <div>
+    <label id="p1">Name</label><br>
+    {{ form.name }}
+    <span id="sname"></span>
+    </div><br>
+
+    <div>
+    <label id="p2">Email:</label><br>
+    {{ form.email }}
+    <span id="semail"></span>
+    </div><br>
+    
+    <div>
+    <label id="p3">Phone Number:</label><br>
+    {{ form.phonenumber }}
+    <span id="sphonenumber"></span>
+    </div><br>
+    
+    <div>
+    <label id="p4">Description:</label><br>
+    {{ form.description }}
+    <span id="sdescription"></span>
+    </div><br>
+    
+    <div>
+    <button type="submit" id="submit">Submit</button>
+    </div><br>
+
+    
+    </form>
+
+
+
+
+<script type="text/javascript">
+
+
+
+
+    $(document).on('submit', '#new_user_form',function(e){
+         
+         e.preventDefault();
+        
+
+        $.ajax({
+
+            type: 'POST',
+            url: '/user/create/',
+            data:{
+                name:$('#name').val(),
+                email:$('#email').val(),
+                phonenumber:$('#phonenumber').val(),
+                description:$('#description').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                
+            },
+
+            success:function(response){
+
+                document.getElementById("sname").innerHTML = response["nInfo"];
+                document.getElementById("semail").innerHTML = response["eInfo"];
+                document.getElementById("sphonenumber").innerHTML = response["pInfo"];
+                document.getElementById("sdescription").innerHTML = response["dInfo"];
+                
+                var flag=response["flag"];
+                if(flag) {
+                    location.replace("submission");
+                }
+
+                 
+            }
+
+      });
+        
+
+    });
+
+</script>
+
+</body>
+
+</html>
